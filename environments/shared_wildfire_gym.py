@@ -54,13 +54,21 @@ class SharedWildFireGym(Env):
             # should never reach this point
             print("EPISODE DONE!!!")
 
-        assert len(action_n) == self.n_agents
+        action_vector = [0, 0]
+        if action_n == 1:
+            action_vector = [0, 1]
+        elif action_n == 2:
+            action_vector = [1, 0]
+        elif action_n == 3:
+            action_vector = [1, 1]
+
+            
         
 
         if self.time_steps % (DT//DTI) == 0:
             self.observation = self.fireEnv.step()
         
-        rewards = self.dronesEnv.step(action_n, self.observation)
+        rewards = self.dronesEnv.step(action_vector, self.observation)
         
         self.done = not self.fireEnv.fire_in_range(6)
         self.time_steps += 1
