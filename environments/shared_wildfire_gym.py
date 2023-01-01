@@ -15,7 +15,7 @@ class SharedWildFireGym(Env):
     def __init__ (self, _n_agents = 2):
         self._n_agents = _n_agents
 
-        self.action_space =  spaces.Tuple(spaces.Discrete(2), spaces.Discrete(2))
+        self.action_space =  spaces.Tuple((spaces.Discrete(2), spaces.Discrete(2)))
 
         self.observation_space = spaces.Dict(
             belief_map = spaces.Box(low=0, high=1.0, shape=(2, HEIGHT, WIDTH), dtype=np.float32),
