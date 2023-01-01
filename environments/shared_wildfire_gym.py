@@ -15,7 +15,7 @@ class SharedWildFireGym(Env):
     def __init__ (self, _n_agents = 2):
         self._n_agents = _n_agents
 
-        self.action_space =  MultiAgentActionSpace([spaces.Discrete(5) for _ in range(self.n_agents)])
+        self.action_space =  MultiAgentActionSpace([spaces.Discrete(2) for _ in range(self.n_agents)])
 
         self.observation_space = MultiAgentObservationSpace([spaces.Dict(
             belief_map = spaces.Box(low=0, high=1.0, shape=(2, HEIGHT, WIDTH), dtype=np.float32),
