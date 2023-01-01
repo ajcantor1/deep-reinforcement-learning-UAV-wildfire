@@ -41,7 +41,7 @@ class SharedWildFireGym(Env):
         self.dronesEnv.reset(seed, self.fireEnv.observation)
         self.time_steps = 0
         self.done = False
-        return self.get_obs()
+        return [drone.get_obs() for drone in self.dronesEnv.drones]
 
 
     def step (self, action_n):
