@@ -14,6 +14,14 @@ class SharedWildFireGym(Env):
     def __init__ (self, _n_agents = 2):
         self._n_agents = _n_agents
         self.action_space = MultiAgentActionSpace([spaces.Discrete(2) for _ in range(self.n_agents)])
+        self.observation_space = spaces.Dict(
+            belief_map = spaces.Box(low=0, high=1.0, shape=(HEIGHT, WIDTH, 2), dtype=np.float32),
+            bank_angle = spaces.Box(low=-0.872665, high=0.872665, dtype=np.float32),
+            rho = spaces.Box(low=0, high=141.421, dtype=np.float32),
+            theta = spaces.Box(low=-np.pi, high=np.pi, dtype=np.float32),
+            psi = spaces.Box(low=-np.pi, high=np.pi, dtype=np.float32),
+            other_bank_angle = spaces.Box(low=-0.872665, high=0.872665, dtype=np.float32),
+        )
         self.fireEnv = ProbabilisticFireEnv(HEIGHT, WIDTH)
         self.dronesEnv = DronesEnv(HEIGHT, WIDTH, DT, DTI) 
         self.info = {}
@@ -32,7 +40,14 @@ class SharedWildFireGym(Env):
 
 
     def get_obs(self):
-        return {'belief_map': self.dronesEnv.observation, 'state_vector': self.dronesEnv.state}
+        return {
+            'belief_map': self.dronesEnv.observation, 
+            'bank_angle': self.dronesEnv.drones[0].bank_angle,
+            'rho':  self.dronesEnv.drones[0].rho,
+            'theta':  self.dronesEnv.drones[0].theta,
+            'psi':  self.dronesEnv.drones[0].psi,
+            'other_bank_angle':  self.dronesEnv.drones[0].bank_angle,
+        }
 
     def step (self, action_n):
         if self.done:
