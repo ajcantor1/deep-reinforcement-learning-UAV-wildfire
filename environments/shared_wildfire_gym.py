@@ -17,25 +17,14 @@ class SharedWildFireGym(Env):
 
         self.action_space = MultiAgentActionSpace([spaces.Discrete(2) for _ in range(_n_agents)])
 
-        self.observation_space =  MultiAgentObservationSpace([
-            spaces.Tuple((
-                spaces.Box(low=0, high=1.0, shape=(2, HEIGHT, WIDTH), dtype=np.float32),
-                spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32),
-                spaces.Box(low=0, high=141.421, shape=(1,), dtype=np.float32),
-                spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
-                spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
-                spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32)
-            )),
-            spaces.Tuple((
-                spaces.Box(low=0, high=1.0, shape=(2, HEIGHT, WIDTH), dtype=np.float32),
-                spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32),
-                spaces.Box(low=0, high=141.421, shape=(1,), dtype=np.float32),
-                spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
-                spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
-                spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32)
-            )),
-
-        ])
+        self.observation_space = spaces.Dict(
+            belief_map = spaces.Box(low=0, high=1.0, shape=(2, HEIGHT, WIDTH), dtype=np.float32),
+            bank_angle = spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32),
+            rho = spaces.Box(low=0, high=141.421, shape=(1,), dtype=np.float32),
+            theta = spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
+            psi = spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
+            other_bank_angle = spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32)
+        ) 
    
         self.fireEnv = ProbabilisticFireEnv(HEIGHT, WIDTH)
         self.dronesEnv = DronesEnv(HEIGHT, WIDTH, DT, DTI) 
