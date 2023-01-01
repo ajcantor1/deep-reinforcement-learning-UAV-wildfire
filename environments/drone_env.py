@@ -239,10 +239,7 @@ class DronesEnv:
     self._belief_map_channel = seed
     self._time_elapsed_channel = np.full(shape=(self._height, self._width), fill_value=250)
 
-    mask1 = self._drone_scan_mask(self._drones[0])
-    mask2 = self._drone_scan_mask(self._drones[1])
-
-    mask = mask1+mask2
+    mask = self._drones[0].mask+self._drones[0].mask
     self._drone_scan(mask, fireMap)
 
 
