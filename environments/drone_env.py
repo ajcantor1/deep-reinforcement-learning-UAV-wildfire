@@ -159,6 +159,16 @@ class Drone:
   def observation(self):
     return np.stack((self.time_elasped_map, self.belief_map), axis=0)[np.newaxis,...]
     
+  def get_obs(self):
+    return {
+        'belief_map': self.observation, 
+        'bank_angle': self.bank_angle,
+        'rho':  self.rho,
+        'theta':  self.theta,
+        'psi':  self.psi,
+        'other_bank_angle':  self.otherDrone.bank_angle,
+    }
+  
   def step(self, input):
     
     self.x +=  VELOCITY*math.cos(self.heading_angle)
@@ -179,8 +189,12 @@ class Drone:
       self.bank_angle -= action
 
 
-
-
+  @property
+  def mask(self):
+    Y, X = np.ogrid[:height, :width]
+    dist_from_center = np.sqrt((X - self.x)**2 + (Y-self.y)**2)
+    mask = dist_from_center <= self.scan_radius
+    return mask
 
   def plot_time_elapsed(self, fig, ax):
 
@@ -231,11 +245,6 @@ class DronesEnv:
     mask = mask1+mask2
     self._drone_scan(mask, fireMap)
 
-  def _drone_scan_mask(self, drone):
-    Y, X = np.ogrid[:height, :width]
-    dist_from_center = np.sqrt((X - drone.x)**2 + (Y-drone.y)**2)
-    mask = dist_from_center <= self.scan_radius
-    return mask
 
   @property 
   def belief_map_channel(self):
@@ -275,20 +284,14 @@ class DronesEnv:
 
     return np.count_nonzero(mask & (self._belief_map_channel==0) & (fireMap==1))
       
-  def step(self, input, fireMap):
-    self._drones[0].step(input[0])
-    self._drones[1].step(input[1])
+  def update(self, fireMap):
 
-    mask1 = self._drone_scan_mask(self._drones[0])
-    mask2 = self._drone_scan_mask(self._drones[1])
+    rewards = [self._reward(self._drones[0].mask, fireMap), self._reward(self._drones[1].mask, fireMap)]
 
-    reward1 = self._reward(mask1, fireMap)
-    reward2 = self._reward(mask2, fireMap)
-
-    mask = mask1+mask2
+    mask = self._drones[0].mask+self._drones[1].mask
     self._drone_scan(mask, fireMap)
+    return rewards
 
-    return reward1, reward2
 
   def _drone_scan(self, mask, fireMap):
     self._belief_map_channel[mask] = fireMap[mask]
