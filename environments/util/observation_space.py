@@ -12,11 +12,3 @@ class MultiAgentObservationSpace(list):
     def sample(self):
         """ samples observations for each agent from uniform distribution"""
         return [agent_observation_space.sample() for agent_observation_space in self._agents_observation_space]
-
-    def contains(self, obs):
-        """ contains observation """
-        for space, ob in zip(self._agents_observation_space, obs):
-            if not space.contains(ob):
-                return False
-        else:
-            return True
