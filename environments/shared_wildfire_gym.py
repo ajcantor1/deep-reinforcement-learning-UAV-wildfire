@@ -15,16 +15,16 @@ class SharedWildFireGym(Env):
     def __init__ (self, _n_agents = 2):
         self._n_agents = _n_agents
 
-        self.action_space = spaces.Discrete(2)
+        self.action_space = spaces.Tuple([spaces.Discrete(2) for _ in range(_n_agents)])
 
-        self.observation_space = spaces.Dict(
+        self.observation_space = spaces.Tuple([spaces.Dict(
             belief_map = spaces.Box(low=0, high=1.0, shape=(2, HEIGHT, WIDTH), dtype=np.float32),
             bank_angle = spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32),
             rho = spaces.Box(low=0, high=141.421, shape=(1,), dtype=np.float32),
             theta = spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
             psi = spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
             other_bank_angle = spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32)
-        )
+        ) for _ in range(_n_agents)])
    
         self.fireEnv = ProbabilisticFireEnv(HEIGHT, WIDTH)
         self.dronesEnv = DronesEnv(HEIGHT, WIDTH, DT, DTI) 
@@ -43,7 +43,16 @@ class SharedWildFireGym(Env):
         return [drone.get_obs() for drone in self.dronesEnv.drones]
 
 
+    def step (self, action_n):
+        if self.done:
+            # should never reach this point
+            print("EPISODE DONE!!!")
 
+        if self.time_steps % (DT//DTI) == 0:
+            self.observation = self.fireEnv.step()
+        
+        for drone, action in zip(self.dronesEnv.drones, action_n):
+            drone.step(action)
 
         rewards = self.dronesEnv.update(self.observation)
         self.done = not self.fireEnv.fire_in_range(6)
