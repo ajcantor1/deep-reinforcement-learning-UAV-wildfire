@@ -15,15 +15,15 @@ class SharedWildFireGym(Env):
     def __init__ (self, _n_agents = 2):
         self._n_agents = _n_agents
 
-        self.action_space = spaces.Tuple([spaces.Discrete(2) for _ in range(_n_agents)])
+        self.action_space = MultiAgentActionSpace([spaces.Discrete(2) for _ in range(_n_agents)])
 
-        self.observation_space = spaces.Tuple([spaces.Dict(
-            belief_map = spaces.Box(low=0, high=1.0, shape=(2, HEIGHT, WIDTH), dtype=np.float32),
-            bank_angle = spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32),
-            rho = spaces.Box(low=0, high=141.421, shape=(1,), dtype=np.float32),
-            theta = spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
-            psi = spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
-            other_bank_angle = spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32)
+        self.observation_space =  MultiAgentObservationSpace([spaces.Tuple(
+            spaces.Box(low=0, high=1.0, shape=(2, HEIGHT, WIDTH), dtype=np.float32),
+            spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32),
+            spaces.Box(low=0, high=141.421, shape=(1,), dtype=np.float32),
+            spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
+            spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
+            spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32)
         ) for _ in range(_n_agents)])
    
         self.fireEnv = ProbabilisticFireEnv(HEIGHT, WIDTH)
