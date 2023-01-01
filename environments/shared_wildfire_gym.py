@@ -1,6 +1,5 @@
 from gym import Env
 from gym import spaces
-from environments.util.action_space import MultiAgentActionSpace
 from environments.probabilistic_fire_env import ProbabilisticFireEnv
 from environments.drone_env import DronesEnv
 import numpy as np
@@ -15,7 +14,7 @@ class SharedWildFireGym(Env):
         self._n_agents = _n_agents
         self.action_space = spaces.Discrete(4) 
         self.observation_space = spaces.Dict(
-            belief_map = spaces.Box(low=0, high=1.0, shape=(HEIGHT, WIDTH, 2), dtype=np.float32),
+            belief_map = spaces.Box(low=0, high=1.0, shape=(2, HEIGHT, WIDTH), dtype=np.float32),
             bank_angle = spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32),
             rho = spaces.Box(low=0, high=141.421, shape=(1,), dtype=np.float32),
             theta = spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
