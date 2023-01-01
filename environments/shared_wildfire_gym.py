@@ -15,10 +15,9 @@ class SharedWildFireGym(Env):
     def __init__ (self, _n_agents = 2):
         self._n_agents = _n_agents
 
-        self.action_space = MultiAgentActionSpace([spaces.Discrete(2) for _ in range(self.n_agents)])
+        self.action_space = [spaces.Discrete(2) for _ in range(self.n_agents)]
 
-        self.observation_space = MultiAgentObservationSpace(
-            [spaces.Dict(
+        self.observation_space = [spaces.Dict(
                 belief_map = spaces.Box(low=0, high=1.0, shape=(2, HEIGHT, WIDTH), dtype=np.float32),
                 bank_angle = spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32),
                 rho = spaces.Box(low=0, high=141.421, shape=(1,), dtype=np.float32),
@@ -26,7 +25,7 @@ class SharedWildFireGym(Env):
                 psi = spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
                 other_bank_angle = spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32)
             )
-            for _ in range(self.n_agents) ])
+            for _ in range(self.n_agents) ]
         self.fireEnv = ProbabilisticFireEnv(HEIGHT, WIDTH)
         self.dronesEnv = DronesEnv(HEIGHT, WIDTH, DT, DTI) 
         self.info = {}
