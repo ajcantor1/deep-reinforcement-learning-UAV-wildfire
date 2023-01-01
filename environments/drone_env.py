@@ -193,7 +193,7 @@ class Drone:
   def mask(self):
     Y, X = np.ogrid[:height, :width]
     dist_from_center = np.sqrt((X - self.x)**2 + (Y-self.y)**2)
-    mask = dist_from_center <= self.scan_radius
+    mask = dist_from_center <= 10
     return mask
 
   def plot_time_elapsed(self, fig, ax):
