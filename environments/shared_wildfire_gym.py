@@ -67,7 +67,7 @@ class SharedWildFireGym(Env):
         if self.time_steps % (DT//DTI) == 0:
             self.observation = self.fireEnv.step()
         
-        rewards = self.dronesEnv.step(action_vector, self.observation)
+        rewards = sum(self.dronesEnv.step(action_vector, self.observation))
         
         self.done = not self.fireEnv.fire_in_range(6)
         self.time_steps += 1
