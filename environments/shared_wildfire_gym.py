@@ -24,7 +24,7 @@ class SharedWildFireGym(Env):
             theta = spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
             psi = spaces.Box(low=-np.pi, high=np.pi, shape=(1,), dtype=np.float32),
             other_bank_angle = spaces.Box(low=-0.872665, high=0.872665, shape=(1,), dtype=np.float32)
-        ) or _ in range(self.n_agents)])
+        ) for _ in range(self.n_agents)])
    
         self.fireEnv = ProbabilisticFireEnv(HEIGHT, WIDTH)
         self.dronesEnv = DronesEnv(HEIGHT, WIDTH, DT, DTI) 
